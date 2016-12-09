@@ -1,35 +1,23 @@
-# Spring Boot and Camel using ConfigMap and Secret resources 
+# Spring Boot and Camel using ConfigMaps and Secrets 
 
-This quickstart demonstrates how to configure a Spring-Boot application using Kubernetes/Openshift ConfigMap and Secret objects.
+This quickstart demonstrates how to configure a Spring-Boot application using Kubernetes ConfigMaps and Secrets.
 
 A route generates sample messages that are delivered to a list of recipient endpoints 
 configured through a property named `quickstart.recipients` in the `src/main/resources/application.properties` file.
-The property can then be overridden using a Kubernetes ConfigMap object.
-As soon as a ConfigMap named `camel-config` (containing a property named `application.properties`) is created or changed, 
- an application-context refresh is triggered and the logs change to reflect the new configuration. 
- 
-A sample `ConfigMap` (`sample-configmap.yml`) is contained in this repository (it change the configuration to use all available endpoints in the `recipientList`). 
-It can be created by running (from the root of this repository):
-  
-    kubectl create -f sample-configmap.yml
-    # for Openshift:
-    # oc create -f sample-configmap.yml
+The property can be overridden using a Kubernetes ConfigMap object.
+As soon as a ConfigMap named `camel-config` (containing a property named `application.properties`) is created or changed in the namespace, 
+ an application-context refresh will be triggered and the logs will reflect the new configuration. 
+ A sample `ConfigMap` (`sample-configmap.yml`) is contained in this repository (it changes the configuration to use all available endpoints in the `recipientList`). 
 
 The quickstart will run on Openshift using a `ServiceAccount` named `fis-camel-config`, with the `view` role granted.
-This way, the application is allowed to listen for changes in the Openshift project and read the `ConfigMap`.
+This way, the application is allowed to read the `ConfigMap` and to listen for changes in the current Openshift project.
 
-Secrets can also be used to configure the application (a sample username/password combination in this quickstart).
-Unlike the `ConfigMap` objects, `Secret`s require higher permissions in order to be read using the Openshift API.
-The approach used in this quickstart is to mount the secret as a volume in the POD and configure its location in 
-the spring-cloud config file (`src/main/resources/bootstrap.yml`).
+Secrets can also be used to configure the application (a sample username/password combination is configured using secrets in this quickstart).
+Unlike the `ConfigMap` objects, secrets require higher permissions in order to be read using the Openshift APIs.
+To overcome this security limitation, the approach used in this quickstart is to mount the secret as a volume in the POD and 
+configure its location in the spring-cloud config file (`src/main/resources/bootstrap.yml`).
 
-A sample `Secret` (`sample-secret.yml`) is contained in this repository (it change the configuration to use all available endpoints in the `recipientList`). 
-It can be created by running (from the root of this repository):
-
-    kubectl create -f sample-secret.yml
-    # for Openshift:
-    # oc create -f sample-secret.yml
-
+A sample secret (`sample-secret.yml`) is contained in this repository (it changes the configuration to use all available endpoints in the `recipientList`). 
 **Note: a secret named `camel-config` must be present in the namespace before the application is deployed**
 (otherwise the container remains in a pending status, waiting for the secret).
 
@@ -49,28 +37,29 @@ The example can be run locally using the following Maven goal:
 
 ### Running the example in Kubernetes
 
-It is assumed a running Kubernetes platform is already running. If not you can find details how to [get started](http://fabric8.io/guide/getStarted/index.html).
+It is assumed that Kubernetes is already running. If not you can find details how to [get started](http://fabric8.io/guide/getStarted/index.html).
 
 Assuming your current shell is connected to Kubernetes or OpenShift so that you can type a command like
 
 ```
 kubectl get pods
+# for Openshift:
+# oc get pods
 ```
 
-or for OpenShift
-
-```
-oc get pods
-```
-
-The following command will create the required secret:
+The following command will create the (**required**) secret:
 
     kubectl create -f sample-secret.yml
+    # for Openshift:
+    # oc create -f sample-secret.yml
 
-or for Openshift
+The following command can be used to create the ConfigMap 
+(the ConfigMap can be also created after the application has been deployed, to see the live-reload feature in action):
 
-    oc create -f sample-secret.yml
-    
+    kubectl create -f sample-configmap.yml
+    # for Openshift:
+    # oc create -f sample-configmap.yml
+
 Then the following command will package your app and run it on Kubernetes:
 
 ```
