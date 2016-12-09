@@ -6,7 +6,7 @@ A route generates sample messages that are delivered to a list of recipient endp
 configured through a property named `quickstart.recipients` in the `src/main/resources/application.properties` file.
 The property can be overridden using a Kubernetes ConfigMap object.
 As soon as a ConfigMap named `camel-config` (containing a property named `application.properties`) is created or changed in the namespace, 
- an application-context refresh will be triggered and the logs will reflect the new configuration. 
+ an application-context refresh event will be triggered and the logs will reflect the new configuration. 
  A sample `ConfigMap` (`sample-configmap.yml`) is contained in this repository (it changes the configuration to use all available endpoints in the `recipientList`). 
 
 The quickstart will run on Openshift using a `ServiceAccount` named `qs-camel-config`, with the `view` role granted.
@@ -14,12 +14,13 @@ This way, the application is allowed to read the `ConfigMap` and to listen for c
 
 Secrets can also be used to configure the application (a sample username/password combination is configured using secrets in this quickstart).
 Unlike the `ConfigMap` objects, secrets require higher permissions in order to be read using the Openshift APIs.
-To overcome this security limitation, the approach used in this quickstart is to mount the secret as a volume in the POD and 
+To overcome this security limitation, the approach used in this quickstart is to mount the secret as a volume in the Pod and 
 configure its location in the spring-cloud config file (`src/main/resources/bootstrap.yml`).
 
-A sample secret (`sample-secret.yml`) is contained in this repository (it changes the configuration to use all available endpoints in the `recipientList`). 
+A sample secret (`sample-secret.yml`) is contained in this repository (it just replaces the username `wrong-username` with `myuser`). 
+
 **Note: a secret named `camel-config` must be present in the namespace before the application is deployed**
-(otherwise the container remains in a pending status, waiting for the secret).
+(otherwise the container remains in a pending status, waiting for it).
 
 ### Building
 
