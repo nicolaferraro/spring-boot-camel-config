@@ -9,7 +9,7 @@ As soon as a ConfigMap named `camel-config` (containing a property named `applic
  an application-context refresh will be triggered and the logs will reflect the new configuration. 
  A sample `ConfigMap` (`sample-configmap.yml`) is contained in this repository (it changes the configuration to use all available endpoints in the `recipientList`). 
 
-The quickstart will run on Openshift using a `ServiceAccount` named `fis-camel-config`, with the `view` role granted.
+The quickstart will run on Openshift using a `ServiceAccount` named `qs-camel-config`, with the `view` role granted.
 This way, the application is allowed to read the `ConfigMap` and to listen for changes in the current Openshift project.
 
 Secrets can also be used to configure the application (a sample username/password combination is configured using secrets in this quickstart).

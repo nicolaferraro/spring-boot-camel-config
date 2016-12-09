@@ -1,7 +1,7 @@
 spec:
   template:
     spec:
-      serviceAccountName: "fis-camel-config"
+      serviceAccountName: "qs-camel-config"
       volumes:
         - name: "camel-config"
           secret:
